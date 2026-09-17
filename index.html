@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoVision AI - Smart Vehicle Detection System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 flex justify-center items-center min-h-screen font-sans antialiased select-none overflow-x-hidden">
+
+    <!-- Mobile Device Container Frame -->
+    <div class="w-full max-w-md h-[880px] bg-slate-900 shadow-2xl rounded-3xl overflow-hidden flex flex-col relative border border-slate-800">
+        
+        <!-- TOP APP BAR -->
+        <header id="top-bar" class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-5 py-4 flex justify-between items-center z-20 hidden">
+            <button id="back-btn" onclick="goBack()" class="text-slate-400 hover:text-white transition flex items-center gap-1 text-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <div class="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-car text-[10px]"></i>
+                </div>
+                <h1 id="bar-title" class="font-black text-sm tracking-wider text-blue-500 uppercase">AutoVision AI</h1>
+            </div>
+            <button onclick="switchScreen('settings')" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-gear"></i></button>
+        </header>
+
+        <!-- MAIN VIEWPORT CONTAINER -->
+        <main class="flex-1 overflow-y-auto relative flex flex-col bg-slate-950 pb-20">
+
+            <!-- 1. SPLASH SCREEN -->
+            <div id="screen-splash" class="absolute inset-0 bg-slate-950 flex flex-col justify-center items-center z-50 transition-opacity duration-700 p-6 text-center">
+                <div class="animate-bounce mb-6">
+                    <!-- LOGO -->
+                    <div class="w-24 h-24 bg-gradient-to-tr from-blue-700 to-blue-500 rounded-full flex flex-col items-center justify-center text-white shadow-xl shadow-blue-600/30 border-4 border-blue-400/30 relative mx-auto">
+                        <i class="fa-solid fa-car text-3xl mb-1"></i>
+                        <span class="text-[10px] font-black tracking-widest bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-400/30">AI</span>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-black tracking-wider text-white mb-1">AutoVision AI</h1>
+                <p class="text-xs text-blue-400 font-bold tracking-widest uppercase mb-8">Smart Vehicle Detection System</p>
+                <div class="w-48 bg-slate-900 rounded-full h-2 border border-slate-800 overflow-hidden">
+                    <div id="splash-progress" class="bg-blue-600 h-full rounded-full transition-all duration-1000" style="width: 10%"></div>
+                </div>
+                <span class="text-[10px] text-slate-500 mt-3 font-semibold uppercase tracking-wider">Initializing AI Engine...</span>
+            </div>
+
+            <!-- 2. HOME PAGE -->
+            <div id="screen-home" class="p-6 flex flex-col justify-between flex-1 hidden">
+                <div class="flex flex-col items-center text-center pt-6">
+                    <!-- LOGO -->
+                    <div class="w-20 h-20 bg-gradient-to-tr from-blue-700 to-blue-500 rounded-full flex flex-col items-center justify-center text-white shadow-xl shadow-blue-600/30 border-4 border-blue-400/30 relative mb-4">
+                        <i class="fa-solid fa-car text-2xl mb-0.5"></i>
+                        <span class="text-[9px] font-black tracking-widest bg-blue-900/80 px-2 py-0.5 rounded-full border border-blue-400/30">AI</span>
+                    </div>
+                    <h2 class="text-2xl font-black text-white mb-1">AutoVision AI</h2>
+                    <p class="text-xs text-blue-400 font-bold tracking-widest uppercase mb-6">Smart Vehicle Detection System</p>
+                    
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl text-left w-full mb-6">
+                        <h3 class="font-bold text-xs text-slate-300 uppercase tracking-wider mb-2"><i class="fa-solid fa-wand-magic-sparkles text-blue-500 mr-1"></i> Instant Recognition</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Upload any vehicle photo to instantly detect brand, model, exterior color, and AI confidence metrics with high accuracy.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 pb-2">
+                    <button onclick="switchScreen('detect')" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-blue-600/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-camera"></i> Get Started
+                    </button>
+                    <button onclick="switchScreen('about')" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 py-3.5 rounded-2xl font-semibold text-sm border border-slate-800 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-circle-info"></i> About App
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. ABOUT APP PAGE -->
+            <div id="screen-about" class="p-6 flex flex-col gap-5 hidden">
+                <div class="flex items-center gap-3 bg-slate-900 border border-slate-800 p-4 rounded-3xl">
+                    <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-500/30">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-base text-white">AutoVision AI</h3>
+                        <p class="text-xs text-blue-400 font-semibold">Smart Vehicle Detection System</p>
+                        <span class="text-[10px] text-slate-500 font-medium">Version 2.4.0 (Stable)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex flex-col gap-3">
+                    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Key Features</h4>
+                    <ul class="flex flex-col gap-2.5 text-xs text-slate-300">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> Instant Car Brand & Model Detection</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> Exterior Color Identification</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> Advanced Confidence Scoring</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-500"></i> Community Reviews & Feedback</li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-3xl flex flex-col gap-2">
+                    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Developer Information</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Developed by AutoVision AI Engineering Team. Optimized for high-performance mobile deployment and modern Android devices.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4. VEHICLE DETECTION PAGE -->
+            <div id="screen-detect" class="p-6 flex flex-col justify-between flex-1 hidden">
+                <div class="flex flex-col gap-4">
+                    <h3 class="font-black text-base text-white">Vehicle Detection</h3>
+                    <p class="text-xs text-slate-400">Upload or snap a clear photo of any car to begin AI analysis.</p>
+
+                    <div class="flex-1 flex flex-col items-center justify-center relative bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-4 min-h-[260px]">
+                        <img id="detect-preview-img" src="" alt="Preview" class="max-h-64 object-contain rounded-2xl hidden">
+                        <div id="detect-placeholder" class="flex flex-col items-center text-center gap-2">
+                            <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-blue-500 text-2xl">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <span class="text-xs text-slate-400 font-semibold">No image selected</span>
+                        </div>
+                    </div>
+
+                    <label class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 py-3.5 px-4 rounded-2xl font-bold flex items-center justify-center gap-2 cursor-pointer transition">
+                        <i class="fa-solid fa-image text-blue-500"></i> Choose Car Image
+                        <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                    </label>
+                </div>
+
+                <button id="analyze-btn" onclick="startProcessing()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white py-4 rounded-2xl font-bold text-base shadow-xl shadow-blue-600/30 transition flex items-center justify-center gap-2 mt-4 opacity-50 cursor-not-allowed" disabled>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Vehicle
+                </button>
+            </div>
+
+            <!-- 5. PROCESSING PAGE -->
+            <div id="screen-processing" class="p-6 flex flex-col items-center justify-center flex-1 text-center gap-6 hidden">
+                <div class="w-20 h-20 bg-blue-600/20 border border-blue-500/40 rounded-3xl flex items-center justify-center text-blue-400 text-3xl animate-pulse shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-gear animate-spin"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-white mb-1">Analyzing Image</h3>
+                    <p id="processing-msg" class="text-xs text-blue-400 font-semibold">Detecting vehicle geometry...</p>
+                </div>
+                <div class="w-full max-w-xs bg-slate-900 rounded-full h-2.5 border border-slate-800 overflow-hidden">
+                    <div id="processing-bar" class="bg-blue-600 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <span class="text-[10px] text-slate-500 font-medium">Please wait while our AI model inspects the vehicle.</span>
+            </div>
+
+            <!-- 6. RESULT PAGE -->
+            <div id="screen-result" class="p-6 flex flex-col gap-5 overflow-y-auto hidden">
+                <div class="rounded-3xl overflow-hidden border border-slate-800 bg-slate-900 h-52 relative shadow-lg">
+                    <img id="res-image" src="" class="w-full h-full object-cover">
+                    <span class="absolute bottom-3 right-3 bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg">Confidence: <span id="res-confidence">96%</span></span>
+                </div>
+
+                <div class="bg-gradient-to-r from-blue-950/80 to-slate-900 border border-blue-500/40 p-5 rounded-3xl text-center shadow-xl">
+                    <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold block mb-1">Identified Vehicle</span>
+                    <h2 id="res-full-name" class="text-2xl font-black text-white tracking-wide uppercase">TESLA MODEL 3</h2>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl grid grid-cols-2 gap-3 text-xs">
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                        <span class="text-slate-500 block text-[10px] uppercase font-semibold">Brand</span>
+                        <strong id="res-brand" class="text-sm text-white font-bold">Tesla</strong>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                        <span class="text-slate-500 block text-[10px] uppercase font-semibold">Model</span>
+                        <strong id="res-model" class="text-sm text-white font-bold">Model 3</strong>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800 col-span-2">
+                        <span class="text-slate-500 block text-[10px] uppercase font-semibold">Vehicle Colour</span>
+                        <strong id="res-color" class="text-sm text-white font-bold">Pearl White</strong>
+                    </div>
+                </div>
+
+                <button onclick="switchScreen('detect')" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-blue-600/30 transition">
+                    Scan Another Vehicle
+                </button>
+            </div>
+
+            <!-- 7. REVIEWS PAGE -->
+            <div id="screen-reviews" class="p-6 flex flex-col gap-5 overflow-y-auto hidden">
+                <div class="flex flex-col gap-1">
+                    <h3 class="font-black text-lg text-white tracking-wide">App Reviews</h3>
+                    <p class="text-xs text-slate-400">Share your experience with AutoVision AI.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl flex flex-col gap-4 shadow-sm">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">Rate your experience</label>
+                        <div id="review-stars" class="flex gap-2 text-2xl text-slate-600 cursor-pointer">
+                            <span onclick="setReviewStars(1)">★</span>
+                            <span onclick="setReviewStars(2)">★</span>
+                            <span onclick="setReviewStars(3)">★</span>
+                            <span onclick="setReviewStars(4)">★</span>
+                            <span onclick="setReviewStars(5)">★</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">Your Review</label>
+                        <textarea id="review-text" rows="3" placeholder="Write your review here..." class="bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs text-white focus:outline-none focus:border-blue-500 transition resize-none"></textarea>
+                    </div>
+
+                    <button onclick="submitReview()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-blue-600/30 transition">
+                        Submit Review
+                    </button>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Recent Reviews</h4>
+                    <div id="reviews-list" class="flex flex-col gap-3">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. FEEDBACK PAGE -->
+            <div id="screen-feedback" class="p-6 flex flex-col gap-5 overflow-y-auto hidden">
+                <div class="flex flex-col gap-1">
+                    <h3 class="font-black text-lg text-white tracking-wide">Send Feedback</h3>
+                    <p class="text-xs text-slate-400">Help us improve our detection algorithms.</p>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl flex flex-col gap-4 shadow-sm">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">Name</label>
+                        <input type="text" id="feedback-name" placeholder="Enter your name" class="bg-slate-950 border border-slate-800 rounded-2xl px-3 py-3 text-xs text-white focus:outline-none focus:border-blue-500 transition">
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">Email</label>
+                        <input type="email" id="feedback-email" placeholder="Enter your email" class="bg-slate-950 border border-slate-800 rounded-2xl px-3 py-3 text-xs text-white focus:outline-none focus:border-blue-500 transition">
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">Feedback</label>
+                        <textarea id="feedback-text" rows="4" placeholder="Tell us what you think..." class="bg-slate-950 border border-slate-800 rounded-2xl p-3 text-xs text-white focus:outline-none focus:border-blue-500 transition resize-none"></textarea>
+                    </div>
+
+                    <button onclick="submitFeedback()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-blue-600/30 transition">
+                        Submit Feedback
+                    </button>
+                </div>
+            </div>
+
+            <!-- 9. FEEDBACK SUCCESS PAGE -->
+            <div id="screen-feedback-success" class="p-6 flex flex-col items-center justify-center flex-1 gap-4 text-center hidden">
+                <div class="w-16 h-16 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-full flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/20 mb-2">
+                    ✓
+                </div>
+                <h3 class="text-2xl font-black text-white">Thank You!</h3>
+                <p class="text-xs text-slate-400 max-w-xs leading-relaxed">
+                    Feedback submitted successfully. We appreciate your input!
+                </p>
+                <button onclick="switchScreen('home')" class="mt-4 w-full max-w-xs bg-blue-600 hover:bg-blue-500 active:scale-95 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-blue-600/30 transition">
+                    Back Home
+                </button>
+            </div>
+
+            <!-- 10. SETTINGS PAGE -->
+            <div id="screen-settings" class="p-6 flex flex-col gap-5 hidden">
+                <h3 class="font-black text-base text-white tracking-wide">Settings</h3>
+                
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-3xl flex flex-col gap-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-300">Dark Mode</span>
+                        <input type="checkbox" id="setting-dark" checked disabled class="accent-blue-600 w-4 h-4">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-300">Notifications</span>
+                        <input type="checkbox" id="setting-notif" checked class="accent-blue-600 w-4 h-4">
+                    </div>
+                </div>
+
+                <button onclick="resetAppSettings()" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-red-400 py-3.5 rounded-2xl font-bold text-xs transition">
+                    Reset Settings
+                </button>
+            </div>
+
+        </main>
+
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav id="bottom-nav" class="absolute bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 h-16 flex justify-around items-center px-2 z-30 hidden">
+            <button onclick="switchScreen('home')" id="nav-home" class="flex flex-col items-center justify-center flex-1 py-1 text-blue-500 transition">
+                <i class="fa-solid fa-house text-sm mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">Home</span>
+            </button>
+            <button onclick="switchScreen('detect')" id="nav-detect" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-camera text-sm mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">Detect</span>
+            </button>
+            <button onclick="switchScreen('reviews')" id="nav-reviews" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-star text-sm mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">Reviews</span>
+            </button>
+            <button onclick="switchScreen('feedback')" id="nav-feedback" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-comment text-sm mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">Feedback</span>
+            </button>
+            <button onclick="switchScreen('settings')" id="nav-settings" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-gear text-sm mb-0.5"></i>
+                <span class="text-[10px] font-bold tracking-tight">Settings</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- APPLICATION SCRIPT LOGIC -->
+    <script>
+        let currentScreen = 'splash';
+        let activeImageBase64 = '';
+        let reviewRating = 0;
+        let reviewsList = JSON.parse(localStorage.getItem('autovision_reviews') || JSON.stringify([
+            { rating: 5, text: "Incredible accuracy! Detected my car model instantly.", date: "2 days ago" },
+            { rating: 4, text: "Very sleek UI and smooth performance.", date: "1 week ago" }
+        ]));
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Splash screen 10-second timer simulation
+            let progress = 10;
+            const interval = setInterval(() => {
+                progress += 10;
+                const bar = document.getElementById('splash-progress');
+                if (bar) bar.style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    switchScreen('home');
+                }
+            }, 1000);
+
+            renderReviews();
+        });
+
+        function switchScreen(screenId) {
+            document.querySelectorAll('main > div').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+            currentScreen = screenId;
+
+            const topBar = document.getElementById('top-bar');
+            const bottomNav = document.getElementById('bottom-nav');
+
+            if (screenId === 'splash') {
+                topBar.classList.add('hidden');
+                bottomNav.classList.add('hidden');
+            } else {
+                topBar.classList.remove('hidden');
+                bottomNav.classList.remove('hidden');
+                
+                const titles = {
+                    home: 'AutoVision AI',
+                    about: 'About App',
+                    detect: 'Vehicle Detection',
+                    processing: 'Processing',
+                    result: 'Detection Result',
+                    reviews: 'App Reviews',
+                    feedback: 'Feedback',
+                    'feedback-success': 'Success',
+                    settings: 'Settings'
+                };
+                document.getElementById('bar-title').innerText = titles[screenId] || 'AutoVision AI';
+            }
+
+            updateBottomNavActive(screenId);
+        }
+
+        function updateBottomNavActive(screenId) {
+            const navMap = { home: 'nav-home', detect: 'nav-detect', reviews: 'nav-reviews', feedback: 'nav-feedback', settings: 'nav-settings' };
+            document.querySelectorAll('#bottom-nav button').forEach(btn => {
+                btn.classList.remove('text-blue-500');
+                btn.classList.add('text-slate-400');
+            });
+            if (navMap[screenId]) {
+                const activeBtn = document.getElementById(navMap[screenId]);
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-slate-400');
+                    activeBtn.classList.add('text-blue-500');
+                }
+            }
+        }
+
+        function goBack() {
+            if (currentScreen === 'about' || currentScreen === 'detect' || currentScreen === 'reviews' || currentScreen === 'feedback' || currentScreen === 'settings') {
+                switchScreen('home');
+            } else if (currentScreen === 'result') {
+                switchScreen('detect');
+            } else {
+                switchScreen('home');
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    activeImageBase64 = e.target.result;
+                    const preview = document.getElementById('detect-preview-img');
+                    preview.src = activeImageBase64;
+                    preview.classList.remove('hidden');
+                    document.getElementById('detect-placeholder').classList.add('hidden');
+                    
+                    const analyzeBtn = document.getElementById('analyze-btn');
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function startProcessing() {
+            switchScreen('processing');
+            const messages = [
+                "Detecting vehicle geometry...",
+                "Analyzing make and model...",
+                "Matching color signature...",
+                "Finalizing confidence metrics..."
+            ];
+            
+            let p = 0;
+            const bar = document.getElementById('processing-bar');
+            const msg = document.getElementById('processing-msg');
+            
+            const timer = setInterval(() => {
+                p += 10;
+                if (bar) bar.style.width = p + '%';
+                if (p === 30) msg.innerText = messages[1];
+                if (p === 60) msg.innerText = messages[2];
+                if (p === 90) msg.innerText = messages[3];
+                
+                if (p >= 100) {
+                    clearInterval(timer);
+                    populateResult();
+                    switchScreen('result');
+                }
+            }, 1000);
+        }
+
+        function populateResult() {
+            document.getElementById('res-image').src = activeImageBase64 || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('res-full-name').innerText = "TESLA MODEL 3";
+            document.getElementById('res-brand').innerText = "Tesla";
+            document.getElementById('res-model').innerText = "Model 3";
+            document.getElementById('res-color').innerText = "Pearl White";
+            document.getElementById('res-confidence').innerText = "96%";
+        }
+
+        function setReviewStars(stars) {
+            reviewRating = stars;
+            const starsEl = document.querySelectorAll('#review-stars span');
+            starsEl.forEach((el, idx) => {
+                if (idx < stars) {
+                    el.classList.remove('text-slate-600');
+                    el.classList.add('text-amber-400');
+                } else {
+                    el.classList.remove('text-amber-400');
+                    el.classList.add('text-slate-600');
+                }
+            });
+        }
+
+        function submitReview() {
+            const text = document.getElementById('review-text').value.trim();
+            if (reviewRating === 0 || !text) {
+                alert('Please select rating and write a review.');
+                return;
+            }
+            reviewsList.unshift({ rating: reviewRating, text: text, date: 'Just now' });
+            localStorage.setItem('autovision_reviews', JSON.stringify(reviewsList));
+            document.getElementById('review-text').value = '';
+            setReviewStars(0);
+            renderReviews();
+            alert('Review submitted successfully!');
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviews-list');
+            if (!container) return;
+            container.innerHTML = reviewsList.map(r => `
+                <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex flex-col gap-1">
+                    <div class="flex justify-between items-center">
+                        <div class="text-amber-400 text-xs">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                        <span class="text-[10px] text-slate-500">${r.date}</span>
+                    </div>
+                    <p class="text-xs text-slate-300">${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function submitFeedback() {
+            const name = document.getElementById('feedback-name').value.trim();
+            const email = document.getElementById('feedback-email').value.trim();
+            const text = document.getElementById('feedback-text').value.trim();
+            
+            if (!text) {
+                alert('Please enter your feedback.');
+                return;
+            }
+            
+            document.getElementById('feedback-name').value = '';
+            document.getElementById('feedback-email').value = '';
+            document.getElementById('feedback-text').value = '';
+            switchScreen('feedback-success');
+        }
+
+        function resetAppSettings() {
+            if (confirm('Reset all app settings and cache?')) {
+                localStorage.clear();
+                alert('Settings reset successfully.');
+                switchScreen('home');
+            }
+        }
+    </script>
+</body>
+</html>
