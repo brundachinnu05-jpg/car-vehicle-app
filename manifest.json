@@ -1,0 +1,13 @@
+{
+  "background_color": "#0f172a",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "AutoVision AI",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "AutoVision",
+  "start_url": "/",
+  "theme_color": "#2563eb",
+  "description": "Smart Vehicle Detection System",
+  "id": "autovision-ai"
+}
